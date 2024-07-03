@@ -24,14 +24,14 @@ public class ThemeService {
     }
 
     public List<ThemeResponse> findThemes() {
-        return themeRepository.find().stream()
+        return themeRepository.findAll().stream()
             .map(ThemeResponse::new)
             .collect(Collectors.toList());
     }
 
-    public Long saveThemes(ThemeRequest request) {
-        return themeRepository.save(request.getName(), request.getDescription(),
-            request.getThumbnail());
+    public Theme saveThemes(ThemeRequest request) {
+        return themeRepository.save(
+            new Theme(request.getName(), request.getDescription(), request.getThumbnail()));
     }
 
     public ThemeResponse findTheme(Long id) {
@@ -44,6 +44,6 @@ public class ThemeService {
             throw new ThemeReferenceException();
         }
 
-        themeRepository.delete(id);
+        themeRepository.deleteById(id);
     }
 }

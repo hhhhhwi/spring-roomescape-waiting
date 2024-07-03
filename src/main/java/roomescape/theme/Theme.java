@@ -1,7 +1,14 @@
 package roomescape.theme;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Theme {
 
+    @Id
+    @GeneratedValue
     private Long id;
 
     private String name;
@@ -15,6 +22,14 @@ public class Theme {
         this.name = name;
         this.description = description;
         this.thumbnail = thumbnail;
+    }
+
+    public Theme(String name, String description, String thumbnail) {
+        this(null, name, description, thumbnail);
+    }
+
+    public Theme() {
+
     }
 
     public Long getId() {
