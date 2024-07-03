@@ -37,7 +37,7 @@ public class ReservationService {
     }
 
     public List<ReservationResponse> findReservations() {
-        return reservationRepository.find().stream()
+        return reservationRepository.findAll().stream()
             .map(reservation -> {
                 String memberName = memberRepository.findById(reservation.getId())
                     .orElseThrow(MemberNotExistsException::new)
@@ -56,15 +56,14 @@ public class ReservationService {
         Theme theme = themeRepository.findById(request.getThemeId())
             .orElseThrow(ThemeNotExistsException::new);
 
-        Reservation reservation = new Reservation(member.getId(), request.getDate(),
-            reservationTime, theme);
+        Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme);
 
         if (reservation.isBeforeThanNow()) {
             throw new PastDateTimeException();
         }
 
-        if (reservationRepository.countByDateAndTimeAndTheme(reservation.getDate(),
-            reservationTime.getId(), theme.getId()) > 0) {
+        if (reservationRepository.findByDateAndReservationTimeAndTheme(reservation.getDate(),
+            reservationTime, theme).isPresent()) {
             throw new DuplicateRequestException("해당 시간 예약이");
         }
 
@@ -72,6 +71,6 @@ public class ReservationService {
     }
 
     public void deleteReservation(long id) {
-        reservationRepository.delete(id);
+        reservationRepository.deleteById(id);
     }
 }

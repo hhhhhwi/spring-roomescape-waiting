@@ -2,7 +2,6 @@ package roomescape.member.initializer;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import roomescape.member.Member;
 import roomescape.member.MemberRole;

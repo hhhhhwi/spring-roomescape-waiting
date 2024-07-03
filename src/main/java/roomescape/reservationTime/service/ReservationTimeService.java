@@ -2,6 +2,7 @@ package roomescape.reservationTime.service;
 
 import java.time.LocalDate;
 import org.springframework.stereotype.Service;
+import roomescape.error.exception.ReservationTimeNotExistsException;
 import roomescape.error.exception.ReservationTimeReferenceException;
 import roomescape.error.exception.ThemeNotExistsException;
 import roomescape.reservation.service.ReservationRepository;
@@ -35,25 +36,31 @@ public class ReservationTimeService {
     }
 
     public List<ReservationTimeResponse> findReservationTimes() {
-        return reservationTimeRepository.find().stream()
+        return reservationTimeRepository.findAll().stream()
             .map(ReservationTimeResponse::new)
             .collect(Collectors.toList());
     }
 
     public void deleteReservationTime(Long id) {
-        if (reservationRepository.countByTime(id) > 0) {
+        ReservationTime reservationTime = reservationTimeRepository.findById(id)
+            .orElseThrow(ReservationTimeNotExistsException::new);
+
+        if (reservationRepository.findByReservationTime(reservationTime).isPresent()) {
             throw new ReservationTimeReferenceException();
         }
 
-        reservationTimeRepository.delete(id);
+        reservationTimeRepository.deleteById(id);
     }
 
     public List<ReservationTimeResponse> findAvailableReservationTimes(String date, Long themeId) {
         Theme theme = themeRepository.findById(themeId)
             .orElseThrow(ThemeNotExistsException::new);
+        List<Long> ids = reservationRepository.findByDateAndTheme(LocalDate.parse(date), theme)
+            .orElse(List.of())
+            .stream().map(reservation -> reservation.getReservationTime().getId())
+            .toList();
 
-        return reservationTimeRepository.findAvailableTimesByDateAndTheme(LocalDate.parse(date),
-                theme.getId()).stream()
+        return reservationTimeRepository.findByIdNotIn(ids).stream()
             .map(ReservationTimeResponse::new)
             .collect(Collectors.toList());
     }

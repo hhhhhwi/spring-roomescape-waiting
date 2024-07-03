@@ -1,9 +1,15 @@
 package roomescape.reservationTime;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import java.time.LocalTime;
 
+@Entity
 public class ReservationTime {
 
+    @Id
+    @GeneratedValue
     private Long id;
 
     private LocalTime startAt;
@@ -15,6 +21,9 @@ public class ReservationTime {
 
     public ReservationTime(String startAtStr) {
         this(null, LocalTime.parse(startAtStr));
+    }
+
+    public ReservationTime() {
     }
 
     public Long getId() {

@@ -40,7 +40,9 @@ public class ThemeService {
     }
 
     public void deleteTheme(long id) {
-        if (reservationRepository.countByTheme(id) > 0) {
+        Theme theme = themeRepository.findById(id).orElseThrow(ThemeNotExistsException::new);
+
+        if (reservationRepository.findByTheme(theme).isPresent()) {
             throw new ThemeReferenceException();
         }
 
