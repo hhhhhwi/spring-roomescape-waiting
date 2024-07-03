@@ -20,7 +20,7 @@ public class MemberService implements LoginMemberService {
     }
 
     public List<MemberResponse> findMembers() {
-        return memberRepository.find().stream()
+        return memberRepository.findAll().stream()
             .map(member -> new MemberResponse(member.getId(), member.getEmail(), member.getName()))
             .collect(Collectors.toList());
     }

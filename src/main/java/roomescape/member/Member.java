@@ -1,9 +1,16 @@
 package roomescape.member;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import org.thymeleaf.util.StringUtils;
 
+@Entity
 public class Member {
 
+    @Id
+    @GeneratedValue
     private Long id;
 
     private String email;
@@ -12,6 +19,7 @@ public class Member {
 
     private String name;
 
+    @Enumerated
     private MemberRole role;
 
     public Member(Long id, String email, String password, String name, MemberRole role) {
@@ -24,6 +32,9 @@ public class Member {
 
     public Member(String email, String password, String name, MemberRole role) {
         this(null, email, password, name, role);
+    }
+
+    public Member() {
     }
 
     public boolean isMatchedPassword(String password) {
