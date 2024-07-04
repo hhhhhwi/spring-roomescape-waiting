@@ -28,7 +28,7 @@ public class Theme {
         this(null, name, description, thumbnail);
     }
 
-    public Theme() {
+    protected Theme() {
 
     }
 

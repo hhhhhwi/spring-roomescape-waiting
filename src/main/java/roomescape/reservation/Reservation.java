@@ -41,7 +41,7 @@ public class Reservation {
         this(null, member, LocalDate.parse(date), reservationTime, theme);
     }
 
-    public Reservation() {
+    protected Reservation() {
     }
 
     public boolean isBeforeThanNow() {

@@ -34,7 +34,7 @@ public class Member {
         this(null, email, password, name, role);
     }
 
-    public Member() {
+    protected Member() {
     }
 
     public boolean isMatchedPassword(String password) {

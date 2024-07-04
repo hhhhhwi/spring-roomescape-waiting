@@ -23,7 +23,7 @@ public class ReservationTime {
         this(null, LocalTime.parse(startAtStr));
     }
 
-    public ReservationTime() {
+    protected ReservationTime() {
     }
 
     public Long getId() {
