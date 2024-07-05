@@ -29,5 +29,3 @@ Content-Type: application/json
 ### 로그인 - 확인
 GET {{host}}/login/check
 Content-Type: application/json
-
-### 회원가입

@@ -8,6 +8,8 @@ import roomescape.error.exception.PasswordNotMatchedException;
 import roomescape.login.LoginMember;
 import roomescape.login.service.LoginMemberService;
 import roomescape.member.Member;
+import roomescape.member.MemberRole;
+import roomescape.member.dto.MemberRequest;
 import roomescape.member.dto.MemberResponse;
 
 @Service
@@ -21,7 +23,7 @@ public class MemberService implements LoginMemberService {
 
     public List<MemberResponse> findMembers() {
         return memberRepository.findAll().stream()
-            .map(member -> new MemberResponse(member.getId(), member.getEmail(), member.getName()))
+            .map(MemberResponse::new)
             .collect(Collectors.toList());
     }
 
@@ -35,5 +37,12 @@ public class MemberService implements LoginMemberService {
         }
 
         return new LoginMember(member.getId(), member.getName(), member.getRole());
+    }
+
+    public MemberResponse save(MemberRequest memberRequest) {
+        Member member = memberRepository.save(new Member(memberRequest.getEmail(), memberRequest.getPassword(),
+            memberRequest.getName(), MemberRole.MEMBER));
+
+        return new MemberResponse(member);
     }
 }
