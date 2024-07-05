@@ -1,4 +1,4 @@
-package roomescape.reservationTime.dto;
+package roomescape.reservationtime.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import roomescape.error.RoomescapeErrorMessage;

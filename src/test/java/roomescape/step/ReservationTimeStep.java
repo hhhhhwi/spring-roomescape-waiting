@@ -6,7 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import roomescape.reservationTime.dto.ReservationTimeRequest;
+import roomescape.reservationtime.dto.ReservationTimeRequest;
 
 public class ReservationTimeStep {
 

@@ -5,7 +5,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import roomescape.member.Member;
 import roomescape.member.MemberRole;
-import roomescape.member.service.MemberRepository;
+import roomescape.member.repository.MemberRepository;
 
 @Component
 public class MemberInitializer implements ApplicationRunner {

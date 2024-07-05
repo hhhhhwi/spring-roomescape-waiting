@@ -1,8 +1,8 @@
-package roomescape.reservationTime.service;
+package roomescape.reservationtime.repository;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
-import roomescape.reservationTime.ReservationTime;
+import roomescape.reservationtime.ReservationTime;
 
 public interface ReservationTimeRepository extends JpaRepository<ReservationTime, Long> {
     List<ReservationTime> findByIdNotIn(List<Long> id);

@@ -3,13 +3,14 @@ package roomescape.theme.service;
 import org.springframework.stereotype.Service;
 import roomescape.error.exception.ThemeNotExistsException;
 import roomescape.error.exception.ThemeReferenceException;
-import roomescape.reservation.service.ReservationRepository;
+import roomescape.reservation.repository.ReservationRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import roomescape.theme.Theme;
 import roomescape.theme.dto.ThemeRequest;
 import roomescape.theme.dto.ThemeResponse;
+import roomescape.theme.repository.ThemeRepository;
 
 @Service
 public class ThemeService {

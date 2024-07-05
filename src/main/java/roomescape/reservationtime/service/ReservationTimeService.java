@@ -1,19 +1,20 @@
-package roomescape.reservationTime.service;
+package roomescape.reservationtime.service;
 
 import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 import roomescape.error.exception.ReservationTimeNotExistsException;
 import roomescape.error.exception.ReservationTimeReferenceException;
 import roomescape.error.exception.ThemeNotExistsException;
-import roomescape.reservation.service.ReservationRepository;
+import roomescape.reservation.repository.ReservationRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import roomescape.reservationTime.ReservationTime;
-import roomescape.reservationTime.dto.ReservationTimeRequest;
-import roomescape.reservationTime.dto.ReservationTimeResponse;
+import roomescape.reservationtime.ReservationTime;
+import roomescape.reservationtime.dto.ReservationTimeRequest;
+import roomescape.reservationtime.dto.ReservationTimeResponse;
+import roomescape.reservationtime.repository.ReservationTimeRepository;
 import roomescape.theme.Theme;
-import roomescape.theme.service.ThemeRepository;
+import roomescape.theme.repository.ThemeRepository;
 
 @Service
 public class ReservationTimeService {

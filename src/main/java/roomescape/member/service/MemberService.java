@@ -11,6 +11,7 @@ import roomescape.member.Member;
 import roomescape.member.MemberRole;
 import roomescape.member.dto.MemberRequest;
 import roomescape.member.dto.MemberResponse;
+import roomescape.member.repository.MemberRepository;
 
 @Service
 public class MemberService implements LoginMemberService {
