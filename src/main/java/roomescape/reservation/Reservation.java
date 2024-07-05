@@ -1,6 +1,7 @@
 package roomescape.reservation;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,15 +20,15 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Member member;
 
     private LocalDate date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private ReservationTime reservationTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Theme theme;
 
     public Reservation(Long id, Member member, LocalDate date, ReservationTime reservationTime, Theme theme) {
@@ -51,6 +52,10 @@ public class Reservation {
 
     public Long getId() {
         return id;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     public LocalDate getDate() {

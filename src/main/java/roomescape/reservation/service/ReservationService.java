@@ -40,13 +40,7 @@ public class ReservationService {
 
     public List<ReservationResponse> findReservations() {
         return reservationRepository.findAll().stream()
-            .map(reservation -> {
-                String memberName = memberRepository.findById(reservation.getId())
-                    .orElseThrow(MemberNotExistsException::new)
-                    .getName();
-
-                return new ReservationResponse(reservation, memberName);
-            })
+            .map(ReservationResponse::new)
             .collect(Collectors.toList());
     }
 
@@ -69,7 +63,7 @@ public class ReservationService {
             throw new DuplicateRequestException("해당 시간 예약이");
         }
 
-        return new ReservationResponse(reservationRepository.save(reservation), member.getName());
+        return new ReservationResponse(reservationRepository.save(reservation));
     }
 
     public void deleteReservation(long id) {
