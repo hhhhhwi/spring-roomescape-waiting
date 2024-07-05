@@ -16,9 +16,11 @@ public class LoginService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public String createToken(String email, String password) {
-        LoginMember member = loginMemberService.getLoginMember(email, password);
+    public LoginMember getLoginMember(String email, String password) {
+        return loginMemberService.getLoginMember(email, password);
+    }
 
+    public String createToken(LoginMember member) {
         return jwtTokenProvider.createToken(member.getId(), member.getName(), member.getRole());
     }
 }

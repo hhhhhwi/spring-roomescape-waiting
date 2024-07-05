@@ -1,5 +1,6 @@
 package roomescape.login.controller;
 
+import java.net.URI;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import roomescape.login.LoginMember;
 import roomescape.login.dto.LoginRequest;
 import roomescape.login.dto.LoginResponse;
 import roomescape.login.service.LoginService;
+import roomescape.member.MemberRole;
 
 @Controller
 @RequestMapping("/login")
@@ -30,16 +32,24 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
-        String token = loginService.createToken(loginRequest.getEmail(), loginRequest.getPassword());
+        LoginMember loginMember = loginService.getLoginMember(loginRequest.getEmail(),
+            loginRequest.getPassword());
 
         ResponseCookie cookie = ResponseCookie
-                                    .from("token", token)
+                                    .from("token", loginService.createToken(loginMember))
                                     .path("/")
                                     .httpOnly(true)
                                     .secure(true)
                                     .build();
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+        String uri = "/";
+
+        if (loginMember.getRole().equals(MemberRole.ADMIN)) {
+            uri = "/admin";
+        }
+
+        return ResponseEntity.ok().location(URI.create(uri))
+            .header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
 
     @GetMapping("/check")
