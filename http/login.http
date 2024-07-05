@@ -1,0 +1,33 @@
+### 로그인 - 토큰 생성 (관리자)
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "password"
+}
+
+> {%
+  client.global.set("adminToken", response.headers.valuesOf("Set-Cookie")[0].split(";")[0].split("=")[1]);
+  client.log("adminToken : " + client.global.get("adminToken"));
+%}
+
+### 로그인 - 토큰 생성 (회원)
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "password"
+}
+
+> {%
+  client.global.set("memberToken", response.headers.valuesOf("Set-Cookie")[0].split(";")[0].split("=")[1]);
+  client.log("memberToken : " + client.global.get("memberToken"));
+%}
+
+### 로그인 - 확인
+GET {{host}}/login/check
+Content-Type: application/json
+
+### 회원가입

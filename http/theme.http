@@ -1,0 +1,17 @@
+### 테마 추가 API
+POST {{host}}/themes
+content-type: application/json
+cookie: token={{adminToken}}
+
+{
+  "name": "레벨2 탈출",
+  "description": "우테코 레벨2를 탈출하는 내용입니다.",
+  "thumbnail": "https://i.pinimg.com/236x/6e/bc/46/6ebc461a94a49f9ea3b8bbe2204145d4.jpg"
+}
+
+### 테마 조회 API
+GET {{host}}/themes
+
+### 테마 삭제 API
+DELETE {{host}}/themes/1
+cookie: token={{adminToken}}
