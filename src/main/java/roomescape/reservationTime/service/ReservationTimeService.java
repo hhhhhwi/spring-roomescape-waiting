@@ -60,6 +60,12 @@ public class ReservationTimeService {
             .stream().map(reservation -> reservation.getReservationTime().getId())
             .toList();
 
+        if(ids.isEmpty()) {
+            return reservationTimeRepository.findAll().stream()
+                .map(ReservationTimeResponse::new)
+                .collect(Collectors.toList());
+        }
+
         return reservationTimeRepository.findByIdNotIn(ids).stream()
             .map(ReservationTimeResponse::new)
             .collect(Collectors.toList());

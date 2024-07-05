@@ -1,5 +1,5 @@
 const THEME_API_ENDPOINT = '/themes';
-const RESERVATION_TIME_API_ENDPOINT = '/times';
+const RESERVATION_AVAILABLE_TIME_API_ENDPOINT = '/times/available';
 
 document.addEventListener('DOMContentLoaded', () => {
   requestRead(THEME_API_ENDPOINT)
@@ -83,11 +83,11 @@ function checkDateAndTheme() {
 }
 
 function fetchAvailableTimes(date, themeId) {
-  fetch(RESERVATION_TIME_API_ENDPOINT, { // 예약 가능 시간 조회 API endpoint
+  fetch(RESERVATION_AVAILABLE_TIME_API_ENDPOINT+'?date='+date+'&themeId='+themeId, { // 예약 가능 시간 조회 API endpoint
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-    },
+    }
   }).then(response => {
     if (response.status === 200) return response.json();
     throw new Error('Read failed');
