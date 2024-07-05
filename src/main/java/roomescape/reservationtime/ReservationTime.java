@@ -2,6 +2,7 @@ package roomescape.reservationtime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalTime;
 
@@ -9,7 +10,7 @@ import java.time.LocalTime;
 public class ReservationTime {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private LocalTime startAt;

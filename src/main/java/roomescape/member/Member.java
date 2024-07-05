@@ -3,6 +3,7 @@ package roomescape.member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import org.thymeleaf.util.StringUtils;
 
@@ -10,7 +11,7 @@ import org.thymeleaf.util.StringUtils;
 public class Member {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String email;
