@@ -44,8 +44,8 @@ public class Reservation {
     protected Reservation() {
     }
 
-    public boolean isBeforeThanNow() {
-        return LocalDateTime.of(date, reservationTime.getStartAt()).isBefore(LocalDateTime.now());
+    public boolean isBeforeThan(LocalDateTime dateTime) {
+        return LocalDateTime.of(date, reservationTime.getStartAt()).isBefore(dateTime);
     }
 
     public Long getId() {

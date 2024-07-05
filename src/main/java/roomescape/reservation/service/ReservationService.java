@@ -1,6 +1,7 @@
 package roomescape.reservation.service;
 
 import com.sun.jdi.request.DuplicateRequestException;
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import roomescape.error.exception.MemberNotExistsException;
 import roomescape.error.exception.PastDateTimeException;
@@ -59,7 +60,7 @@ public class ReservationService {
 
         Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme);
 
-        if (reservation.isBeforeThanNow()) {
+        if (reservation.isBeforeThan(LocalDateTime.now())) {
             throw new PastDateTimeException();
         }
 
