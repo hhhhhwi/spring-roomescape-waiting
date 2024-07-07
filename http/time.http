@@ -1,0 +1,20 @@
+### 가능 시간 추가
+POST {{host}}/times
+content-Type: application/json
+cookie: token={{adminToken}}
+
+{
+  "startAt": "10:00"
+}
+
+### 시간 조회 API
+GET {{host}}/times
+
+
+### 시간 삭제 API
+DELETE {{host}}/times/1
+cookie: token={{adminToken}}
+
+
+### 예약 가능 시간 조회
+GET {{host}}/times/available?date=2025-12-31&themeId=1

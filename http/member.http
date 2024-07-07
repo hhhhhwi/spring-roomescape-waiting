@@ -1,0 +1,12 @@
+### 회원 등록 API
+POST {{host}}/members
+Content-Type: application/json
+
+{
+  "email" : "member999@test.com",
+  "password" : "password",
+  "name" : "member999"
+}
+
+### 회원 조회 API
+GET {{host}}/members
