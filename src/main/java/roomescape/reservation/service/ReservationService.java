@@ -10,6 +10,7 @@ import roomescape.error.exception.ThemeNotExistsException;
 import roomescape.member.Member;
 import roomescape.member.repository.MemberRepository;
 import roomescape.reservation.Reservation;
+import roomescape.reservation.dto.MyReservationResponse;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.repository.ReservationRepository;
@@ -68,5 +69,14 @@ public class ReservationService {
 
     public void deleteReservation(long id) {
         reservationRepository.deleteById(id);
+    }
+
+    public List<MyReservationResponse> findReservationsByMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotExistsException::new);
+
+        return reservationRepository.findByMember(member).stream()
+            .map(MyReservationResponse::new)
+            .collect(Collectors.toList());
     }
 }

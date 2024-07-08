@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import roomescape.login.LoginMember;
+import roomescape.reservation.dto.MyReservationResponse;
 import roomescape.reservation.service.ReservationService;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
@@ -23,6 +24,11 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> getReservations() {
         return ResponseEntity.ok().body(reservationService.findReservations());
+    }
+
+    @GetMapping("/mine")
+    public ResponseEntity<List<MyReservationResponse>> getReservations(LoginMember loginMember) {
+        return ResponseEntity.ok().body(reservationService.findReservationsByMember(loginMember.getId()));
     }
 
     @PostMapping

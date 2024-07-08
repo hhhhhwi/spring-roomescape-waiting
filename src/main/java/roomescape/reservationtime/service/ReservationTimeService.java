@@ -57,7 +57,6 @@ public class ReservationTimeService {
         Theme theme = themeRepository.findById(themeId)
             .orElseThrow(ThemeNotExistsException::new);
         List<Long> ids = reservationRepository.findByDateAndTheme(LocalDate.parse(date), theme)
-            .orElse(List.of())
             .stream().map(reservation -> reservation.getReservationTime().getId())
             .toList();
 
