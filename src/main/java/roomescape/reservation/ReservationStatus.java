@@ -4,7 +4,7 @@ public enum ReservationStatus {
     RESERVATION("예약"),
     WAITING("대기 중");
 
-    private String description;
+    private final String description;
 
     ReservationStatus(String description) {
         this.description = description;
