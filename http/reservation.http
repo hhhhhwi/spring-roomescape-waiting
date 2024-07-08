@@ -10,9 +10,12 @@ cookie: token={{adminToken}}
   "memberId": 1
 }
 
-### 예약 조회
+### 예약 조회 - 관리자
 GET {{host}}/reservations
 
+### 나의 예약 조회
+GET {{host}}/reservations/mine
+cookie: token={{memberToken}}
 
 ### 예약 추가 - 회원
 POST {{host}}/reservations
