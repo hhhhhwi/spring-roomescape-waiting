@@ -45,7 +45,7 @@ public class LoginController {
 
         String uri = "/";
 
-        if (loginMember.getRole().equals(MemberRole.ADMIN)) {
+        if (loginMember.hasSameRole(MemberRole.ADMIN)) {
             uri = "/admin";
         }
 
