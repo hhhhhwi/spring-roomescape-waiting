@@ -10,6 +10,7 @@ import roomescape.error.exception.ThemeNotExistsException;
 import roomescape.member.Member;
 import roomescape.member.repository.MemberRepository;
 import roomescape.reservation.Reservation;
+import roomescape.reservation.ReservationStatus;
 import roomescape.reservation.dto.MyReservationResponse;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
@@ -53,7 +54,8 @@ public class ReservationService {
         Theme theme = themeRepository.findById(request.getThemeId())
             .orElseThrow(ThemeNotExistsException::new);
 
-        Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme);
+        Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme,
+                ReservationStatus.RESERVATION);
 
         if (reservation.isBeforeThan(LocalDateTime.now())) {
             throw new PastDateTimeException();

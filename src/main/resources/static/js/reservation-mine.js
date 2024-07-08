@@ -1,5 +1,5 @@
 
-const MY_RESERVATION_API_ENDPOINT = '/reservations-mine';
+const MY_RESERVATION_API_ENDPOINT = '/reservations/mine';
 document.addEventListener('DOMContentLoaded', () => {
   fetch(MY_RESERVATION_API_ENDPOINT) // 내 예약 목록 조회 API 호출
       .then(response => {
@@ -25,7 +25,7 @@ function render(data) {
     /*
     TODO: [3단계] 예약 대기 기능 - 예약 대기 취소 기능 구현 후 활성화
      */
-    if (status !== '예약') { // 예약 대기 상태일 때 예약 대기 취소 버튼 추가하는 코드, 상태 값은 변경 가능
+    if (item.status !== '예약') { // 예약 대기 상태일 때 예약 대기 취소 버튼 추가하는 코드, 상태 값은 변경 가능
       const cancelCell = row.insertCell(4);
       const cancelButton = document.createElement('button');
       cancelButton.textContent = '취소';

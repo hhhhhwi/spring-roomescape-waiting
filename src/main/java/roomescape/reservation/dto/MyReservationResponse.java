@@ -28,7 +28,7 @@ public class MyReservationResponse {
             reservation.getTheme().getName(),
             reservation.getDate().toString(),
             reservation.getReservationTime().getStartAt().toString(),
-            "예약"); // TODO reservation.getStatus()로 변경 예정
+            reservation.getReservationStatus().getDescription());
     }
 
     public Long getReservationId() {
