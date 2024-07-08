@@ -1,12 +1,8 @@
 package roomescape.reservation.service;
 
-import com.sun.jdi.request.DuplicateRequestException;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
-import roomescape.error.exception.MemberNotExistsException;
-import roomescape.error.exception.PastDateTimeException;
-import roomescape.error.exception.ReservationTimeNotExistsException;
-import roomescape.error.exception.ThemeNotExistsException;
+import roomescape.error.exception.*;
 import roomescape.member.Member;
 import roomescape.member.repository.MemberRepository;
 import roomescape.reservation.Reservation;
@@ -63,7 +59,7 @@ public class ReservationService {
 
         if (reservationRepository.findByDateAndReservationTimeAndTheme(reservation.getDate(),
             reservationTime, theme).isPresent()) {
-            throw new DuplicateRequestException("해당 시간 예약이");
+            throw new ReservationTimeAlreadyExistsException();
         }
 
         return new ReservationResponse(reservationRepository.save(reservation));
