@@ -21,7 +21,7 @@ public class CookieUtils {
         Cookie[] cookies = getCookies(request);
 
         return Arrays.stream(cookies)
-            .filter(cookie -> name.equals(cookie.getName()))
+            .filter(cookie -> name.equals(cookie.getName()) && !cookie.getValue().isBlank())
             .findFirst();
     }
 }
