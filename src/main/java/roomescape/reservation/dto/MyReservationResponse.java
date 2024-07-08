@@ -12,15 +12,17 @@ public class MyReservationResponse {
 
     private String time;
 
-    private String status;
+    private String statusCode;
 
-    public MyReservationResponse(Long reservationId, String theme, String date, String time,
-        String status) {
+    private String statusText;
+
+    public MyReservationResponse(Long reservationId, String theme, String date, String time, String statusCode, String statusText) {
         this.reservationId = reservationId;
         this.theme = theme;
         this.date = date;
         this.time = time;
-        this.status = status;
+        this.statusCode = statusCode;
+        this.statusText = statusText;
     }
 
     public MyReservationResponse(Reservation reservation) {
@@ -28,6 +30,7 @@ public class MyReservationResponse {
             reservation.getTheme().getName(),
             reservation.getDate().toString(),
             reservation.getReservationTime().getStartAt().toString(),
+            reservation.getReservationStatus().name(),
             reservation.getReservationStatus().getDescription());
     }
 
@@ -47,7 +50,11 @@ public class MyReservationResponse {
         return time;
     }
 
-    public String getStatus() {
-        return status;
+    public String getStatusCode() {
+        return statusCode;
+    }
+
+    public String getStatusText() {
+        return statusText;
     }
 }
