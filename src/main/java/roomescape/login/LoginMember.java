@@ -16,6 +16,10 @@ public class LoginMember {
         this.role = role;
     }
 
+    public boolean hasSameRole(MemberRole role) {
+        return this.role.equals(role);
+    }
+
     public Long getId() {
         return id;
     }

@@ -2,7 +2,7 @@
 
 ## API
 
-### 예약 조회
+### 예약 조회 - 관리자
 - Request
 ```
 GET /reservations HTTP/1.1
@@ -28,6 +28,42 @@ Content-Type: application/json
     "time": "11:00",
     "themeName" : "레벨2 탈출"
   }
+]
+```
+
+### 나의 예약 조회
+- Request
+```
+GET /reservations/mine HTTP/1.1
+```
+- Response
+
+```json
+HTTP/1.1 200
+Content-Type: application/json
+
+[
+    {
+        "reservationId": 1,
+        "theme": "테마1",
+        "date": "2024-03-01",
+        "time": "10:00",
+        "status": "예약"
+    },
+    {
+        "reservationId": 2,
+        "theme": "테마2",
+        "date": "2024-03-01",
+        "time": "12:00",
+        "status": "예약"
+    },
+    {
+        "reservationId": 3,
+        "theme": "테마3",
+        "date": "2024-03-01",
+        "time": "14:00",
+        "status": "예약"
+    }
 ]
 ```
 

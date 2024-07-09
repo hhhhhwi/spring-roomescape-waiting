@@ -1,6 +1,5 @@
 package roomescape.error;
 
-import com.sun.jdi.request.DuplicateRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,12 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.format.DateTimeParseException;
-import roomescape.error.exception.AuthenticationException;
-import roomescape.error.exception. IllegalMemberRoleException;
-import roomescape.error.exception.NotExistsException;
-import roomescape.error.exception.PasswordNotMatchedException;
-import roomescape.error.exception.PastDateTimeException;
-import roomescape.error.exception.ReferenceException;
+
+import roomescape.error.exception.*;
 
 @RestControllerAdvice
 public class RoomescapeExceptionHandler {
@@ -35,12 +30,9 @@ public class RoomescapeExceptionHandler {
             HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DuplicateRequestException.class)
-    public ResponseEntity<RoomescapeExceptionResponse> handleDuplicateRequestException(
-        DuplicateRequestException e) {
-        return new ResponseEntity<>(RoomescapeExceptionResponse.from(e.getMessage(),
-                                        RoomescapeErrorMessage.EXISTS_EXCEPTION),
-                                    HttpStatus.CONFLICT);
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<RoomescapeExceptionResponse> handleAlreadyExistsException(AlreadyExistsException e) {
+        return new ResponseEntity<>(RoomescapeExceptionResponse.of(e.getMessage()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(DateTimeParseException.class)

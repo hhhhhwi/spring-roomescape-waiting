@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import roomescape.member.Member;
 import roomescape.reservation.Reservation;
 import roomescape.reservationtime.ReservationTime;
 import roomescape.theme.Theme;
@@ -15,5 +16,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Optional<Reservation> findByTheme(Theme theme);
 
-    Optional<List<Reservation>> findByDateAndTheme(LocalDate date, Theme theme);
+    List<Reservation> findByDateAndTheme(LocalDate date, Theme theme);
+
+    Optional<Reservation> findByMember(Member member);
 }

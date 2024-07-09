@@ -3,6 +3,7 @@ package roomescape.member.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import roomescape.error.exception.MemberAlreadyExistsException;
 import roomescape.error.exception.MemberNotExistsException;
 import roomescape.error.exception.PasswordNotMatchedException;
 import roomescape.login.LoginMember;
@@ -41,6 +42,10 @@ public class MemberService implements LoginMemberService {
     }
 
     public MemberResponse save(MemberRequest memberRequest) {
+        if(memberRepository.findByEmail(memberRequest.getEmail()).isPresent()) {
+            throw new MemberAlreadyExistsException();
+        }
+
         Member member = memberRepository.save(new Member(memberRequest.getEmail(), memberRequest.getPassword(),
             memberRequest.getName(), MemberRole.MEMBER));
 

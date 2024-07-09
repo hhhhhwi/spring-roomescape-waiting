@@ -1,7 +1,6 @@
 package roomescape.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static roomescape.member.initializer.MemberInitializer.DUMMY_USER_EMAIL;
 import static roomescape.member.initializer.MemberInitializer.DUMMY_USER_PASSWORD;
 
@@ -52,15 +51,31 @@ public class LoginAcceptanceTest {
 
     @Test
     void 로그인_후_정보_조회_성공() {
-        ExtractableResponse<Response> response = 로그인(DUMMY_USER_EMAIL, DUMMY_USER_PASSWORD);
+        String token = 로그인(DUMMY_USER_EMAIL, DUMMY_USER_PASSWORD).cookie("token");
 
-        RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .cookie("token", response.cookie("token"))
-            .when().get("/login/check")
-            .then().log().all()
-            .statusCode(200)
-            .body("name", equalTo(name));
+        ExtractableResponse<Response> response = 로그인_정보_조회(token);
+
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.jsonPath().get("name").toString()).isEqualTo(name);
+    }
+
+    @Test
+    void 로그아웃_성공() {
+        ExtractableResponse<Response> response = 로그아웃();
+
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.cookie("token")).isBlank();
+    }
+
+    @Test
+    void 로그아웃_후_정보_조회_시_실패() {
+        로그인(DUMMY_USER_EMAIL, DUMMY_USER_PASSWORD);
+
+        String token = 로그아웃().cookie("token");
+
+        ExtractableResponse<Response> response = 로그인_정보_조회(token);
+
+        assertThat(response.statusCode()).isEqualTo(401);
     }
 
     private ExtractableResponse<Response> 로그인(String email, String password) {
@@ -70,5 +85,22 @@ public class LoginAcceptanceTest {
             .when().post("/login")
             .then().log().all()
             .extract();
+    }
+
+    private ExtractableResponse<Response> 로그아웃() {
+        return RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().post("/logout")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 로그인_정보_조회(String token) {
+        return RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("token", token)
+                .when().get("/login/check")
+                .then().log().all()
+                .extract();
     }
 }
