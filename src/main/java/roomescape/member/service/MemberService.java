@@ -42,12 +42,13 @@ public class MemberService implements LoginMemberService {
     }
 
     public MemberResponse save(MemberRequest memberRequest) {
-        if(memberRepository.findByEmail(memberRequest.getEmail()).isPresent()) {
+        if (memberRepository.findByEmail(memberRequest.getEmail()).isPresent()) {
             throw new MemberAlreadyExistsException();
         }
 
-        Member member = memberRepository.save(new Member(memberRequest.getEmail(), memberRequest.getPassword(),
-            memberRequest.getName(), MemberRole.MEMBER));
+        Member member = memberRepository.save(
+            new Member(memberRequest.getEmail(), memberRequest.getPassword(),
+                memberRequest.getName(), MemberRole.MEMBER));
 
         return new MemberResponse(member);
     }
