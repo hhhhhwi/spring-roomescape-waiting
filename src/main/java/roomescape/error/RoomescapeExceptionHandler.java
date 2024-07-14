@@ -84,4 +84,11 @@ public class RoomescapeExceptionHandler {
             HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(IllegalReservationException.class)
+    public ResponseEntity<RoomescapeExceptionResponse> handleIllegalReservationException(
+        IllegalReservationException e) {
+        return new ResponseEntity<>(RoomescapeExceptionResponse.of(e.getMessage()),
+            HttpStatus.BAD_REQUEST);
+    }
+
 }

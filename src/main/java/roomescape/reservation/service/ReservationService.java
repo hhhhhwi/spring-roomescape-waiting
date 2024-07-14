@@ -83,7 +83,7 @@ public class ReservationService {
             reservationTime, theme).size();
 
         if (rank < 1) {
-            //TODO 잘못된 요청에 대한 처리 필요
+            throw new IllegalReservationException();
         }
 
         Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme,
@@ -111,8 +111,8 @@ public class ReservationService {
             .map(reservation -> {
                 if (reservation.isWaiting()) {
                     return MyReservationResponse.from(
-                        // TODO Reservation 상태 값과 다르게 Waiting 객체가 존재하지 않을 때 Exception 처리
-                        waitingRepository.findByReservation(reservation).orElseThrow());
+                        waitingRepository.findByReservation(reservation)
+                            .orElseThrow(IllegalReservationException::new));
                 }
 
                 return MyReservationResponse.from(reservation);
