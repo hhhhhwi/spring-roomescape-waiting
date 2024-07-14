@@ -33,12 +33,12 @@ public class ReservationTimeService {
 
     public ReservationTimeResponse saveReservationTime(ReservationTimeRequest request) {
         ReservationTime reservationTime = new ReservationTime(request.getStartAt());
-        return new ReservationTimeResponse(reservationTimeRepository.save(reservationTime));
+        return ReservationTimeResponse.of(reservationTimeRepository.save(reservationTime));
     }
 
     public List<ReservationTimeResponse> findReservationTimes() {
         return reservationTimeRepository.findAll().stream()
-            .map(ReservationTimeResponse::new)
+            .map(ReservationTimeResponse::of)
             .collect(Collectors.toList());
     }
 
@@ -60,14 +60,9 @@ public class ReservationTimeService {
             .stream().map(reservation -> reservation.getReservationTime().getId())
             .toList();
 
-        if(ids.isEmpty()) {
-            return reservationTimeRepository.findAll().stream()
-                .map(ReservationTimeResponse::new)
-                .collect(Collectors.toList());
-        }
-
-        return reservationTimeRepository.findByIdNotIn(ids).stream()
-            .map(ReservationTimeResponse::new)
+        return reservationTimeRepository.findAll().stream()
+            .map(reservationTime ->
+                ReservationTimeResponse.from(reservationTime, ids.contains(reservationTime.getId())))
             .collect(Collectors.toList());
     }
 }

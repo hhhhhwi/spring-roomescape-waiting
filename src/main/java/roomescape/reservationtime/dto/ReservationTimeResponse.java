@@ -8,13 +8,22 @@ public class ReservationTimeResponse {
 
     private String startAt;
 
-    public ReservationTimeResponse(Long id, String startAt) {
+    private boolean alreadyBooked;
+
+    private ReservationTimeResponse(Long id, String startAt, boolean alreadyBooked) {
         this.id = id;
         this.startAt = startAt;
+        this.alreadyBooked = alreadyBooked;
     }
 
-    public ReservationTimeResponse(ReservationTime reservationTime) {
-        this(reservationTime.getId(), reservationTime.getStartAt().toString());
+    public static ReservationTimeResponse of(ReservationTime reservationTime) {
+        return new ReservationTimeResponse(reservationTime.getId(),
+            reservationTime.getStartAt().toString(), true);
+    }
+
+    public static ReservationTimeResponse from(ReservationTime reservationTime, boolean alreadyBooked) {
+        return new ReservationTimeResponse(reservationTime.getId(),
+            reservationTime.getStartAt().toString(), alreadyBooked);
     }
 
     public Long getId() {
@@ -23,5 +32,9 @@ public class ReservationTimeResponse {
 
     public String getStartAt() {
         return startAt;
+    }
+
+    public boolean isAlreadyBooked() {
+        return alreadyBooked;
     }
 }
