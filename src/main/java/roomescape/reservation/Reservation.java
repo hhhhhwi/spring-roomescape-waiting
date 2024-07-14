@@ -51,6 +51,10 @@ public class Reservation {
         return LocalDateTime.of(date, reservationTime.getStartAt()).isBefore(dateTime);
     }
 
+    public boolean isWaiting() {
+        return ReservationStatus.WAITING.equals(reservationStatus);
+    }
+
     public Long getId() {
         return id;
     }

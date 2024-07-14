@@ -108,7 +108,15 @@ public class ReservationService {
             .orElseThrow(MemberNotExistsException::new);
 
         return reservationRepository.findByMember(member).stream()
-            .map(MyReservationResponse::from)
+            .map(reservation -> {
+                if (reservation.isWaiting()) {
+                    return MyReservationResponse.from(
+                        // TODO Reservation 상태 값과 다르게 Waiting 객체가 존재하지 않을 때 Exception 처리
+                        waitingRepository.findByReservation(reservation).orElseThrow());
+                }
+
+                return MyReservationResponse.from(reservation);
+            })
             .collect(Collectors.toList());
     }
 }

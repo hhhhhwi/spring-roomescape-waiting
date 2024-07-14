@@ -1,6 +1,7 @@
 package roomescape.reservation.dto;
 
 import roomescape.reservation.Reservation;
+import roomescape.reservation.Waiting;
 
 public class MyReservationResponse {
 
@@ -32,6 +33,17 @@ public class MyReservationResponse {
             reservation.getReservationTime().getStartAt().toString(),
             reservation.getReservationStatus().name(),
             reservation.getReservationStatus().getDescription());
+    }
+
+    public static MyReservationResponse from(Waiting waiting) {
+        Reservation reservation = waiting.getReservation();
+
+        return new MyReservationResponse(reservation.getId(),
+            reservation.getTheme().getName(),
+            reservation.getDate().toString(),
+            reservation.getReservationTime().getStartAt().toString(),
+            reservation.getReservationStatus().name(),
+            waiting.getRank() + "번째 " + reservation.getReservationStatus().getDescription());
     }
 
     public Long getReservationId() {
