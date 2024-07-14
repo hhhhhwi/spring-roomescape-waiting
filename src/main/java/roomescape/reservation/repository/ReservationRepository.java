@@ -10,7 +10,7 @@ import roomescape.reservationtime.ReservationTime;
 import roomescape.theme.Theme;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    Optional<Reservation> findByDateAndReservationTimeAndTheme(LocalDate date, ReservationTime time, Theme theme);
+    List<Reservation> findByDateAndReservationTimeAndTheme(LocalDate date, ReservationTime time, Theme theme);
 
     Optional<Reservation> findByReservationTime(ReservationTime time);
 
@@ -18,5 +18,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByDateAndTheme(LocalDate date, Theme theme);
 
-    Optional<Reservation> findByMember(Member member);
+    List<Reservation> findByMember(Member member);
 }

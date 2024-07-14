@@ -51,14 +51,14 @@ public class ReservationService {
             .orElseThrow(ThemeNotExistsException::new);
 
         Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme,
-                ReservationStatus.RESERVATION);
+            ReservationStatus.RESERVATION);
 
         if (reservation.isBeforeThan(LocalDateTime.now())) {
             throw new PastDateTimeException();
         }
 
-        if (reservationRepository.findByDateAndReservationTimeAndTheme(reservation.getDate(),
-            reservationTime, theme).isPresent()) {
+        if (!reservationRepository.findByDateAndReservationTimeAndTheme(reservation.getDate(),
+            reservationTime, theme).isEmpty()) {
             throw new ReservationTimeAlreadyExistsException();
         }
 
@@ -74,7 +74,7 @@ public class ReservationService {
             .orElseThrow(MemberNotExistsException::new);
 
         return reservationRepository.findByMember(member).stream()
-            .map(MyReservationResponse::new)
+            .map(MyReservationResponse::from)
             .collect(Collectors.toList());
     }
 }
