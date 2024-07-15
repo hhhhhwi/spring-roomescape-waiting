@@ -51,6 +51,10 @@ public class Reservation {
         return LocalDateTime.of(date, reservationTime.getStartAt()).isBefore(dateTime);
     }
 
+    public boolean hasSameMember(Member member) {
+        return this.member.getId() == member.getId();
+    }
+
     public boolean isWaiting() {
         return ReservationStatus.WAITING.equals(reservationStatus);
     }

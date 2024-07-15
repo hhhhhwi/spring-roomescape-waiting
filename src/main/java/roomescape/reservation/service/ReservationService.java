@@ -54,7 +54,6 @@ public class ReservationService {
             .orElseThrow(ReservationTimeNotExistsException::new);
         Theme theme = themeRepository.findById(request.getThemeId())
             .orElseThrow(ThemeNotExistsException::new);
-
         Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme,
             ReservationStatus.RESERVATION);
 
@@ -64,7 +63,7 @@ public class ReservationService {
 
         if (!reservationRepository.findByDateAndReservationTimeAndTheme(reservation.getDate(),
             reservationTime, theme).isEmpty()) {
-            throw new ReservationTimeAlreadyExistsException();
+            throw new ReservationAlreadyExistsException();
         }
 
         return ReservationResponse.of(reservationRepository.save(reservation));
@@ -77,24 +76,26 @@ public class ReservationService {
             .orElseThrow(ReservationTimeNotExistsException::new);
         Theme theme = themeRepository.findById(request.getThemeId())
             .orElseThrow(ThemeNotExistsException::new);
-
-        int rank = reservationRepository.findByDateAndReservationTimeAndTheme(
-            LocalDate.parse(request.getDate()),
-            reservationTime, theme).size();
-
-        if (rank < 1) {
-            throw new IllegalReservationException();
-        }
-
         Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme,
-            ReservationStatus.WAITING);
+                ReservationStatus.WAITING);
 
         if (reservation.isBeforeThan(LocalDateTime.now())) {
             throw new PastDateTimeException();
         }
 
+        List<Reservation> reservations = reservationRepository.findByDateAndReservationTimeAndTheme(
+                reservation.getDate(), reservationTime, theme);
+
+        if (reservations.size() < 1) {
+            throw new IllegalReservationException();
+        }
+
+        if (reservations.stream().filter(x -> x.hasSameMember(member)).count() > 0) {
+            throw new ReservationAlreadyExistsException();
+        }
+
         reservationRepository.save(reservation);
-        waitingRepository.save(new Waiting(reservation, rank));
+        waitingRepository.save(new Waiting(reservation, reservations.size()));
 
         return ReservationResponse.of(reservation);
     }
