@@ -1,6 +1,5 @@
 package roomescape.reservation.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import roomescape.error.exception.*;
@@ -48,21 +47,10 @@ public class ReservationService {
     }
 
     public ReservationResponse saveReservation(Long memberId, ReservationRequest request) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotExistsException::new);
-        ReservationTime reservationTime = reservationTimeRepository.findById(request.getTimeId())
-            .orElseThrow(ReservationTimeNotExistsException::new);
-        Theme theme = themeRepository.findById(request.getThemeId())
-            .orElseThrow(ThemeNotExistsException::new);
-        Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme,
-            ReservationStatus.RESERVATION);
-
-        if (reservation.isBeforeThan(LocalDateTime.now())) {
-            throw new PastDateTimeException();
-        }
+        Reservation reservation = createReservation(memberId, request, ReservationStatus.RESERVATION);
 
         if (!reservationRepository.findByDateAndReservationTimeAndTheme(reservation.getDate(),
-            reservationTime, theme).isEmpty()) {
+                reservation.getReservationTime(), reservation.getTheme()).isEmpty()) {
             throw new ReservationAlreadyExistsException();
         }
 
@@ -70,27 +58,16 @@ public class ReservationService {
     }
 
     public ReservationResponse saveWaitingReservation(Long memberId, ReservationRequest request) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotExistsException::new);
-        ReservationTime reservationTime = reservationTimeRepository.findById(request.getTimeId())
-            .orElseThrow(ReservationTimeNotExistsException::new);
-        Theme theme = themeRepository.findById(request.getThemeId())
-            .orElseThrow(ThemeNotExistsException::new);
-        Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme,
-                ReservationStatus.WAITING);
-
-        if (reservation.isBeforeThan(LocalDateTime.now())) {
-            throw new PastDateTimeException();
-        }
+        Reservation reservation = createReservation(memberId, request, ReservationStatus.WAITING);
 
         List<Reservation> reservations = reservationRepository.findByDateAndReservationTimeAndTheme(
-                reservation.getDate(), reservationTime, theme);
+                reservation.getDate(), reservation.getReservationTime(), reservation.getTheme());
 
         if (reservations.size() < 1) {
             throw new IllegalReservationException();
         }
 
-        if (reservations.stream().filter(x -> x.hasSameMember(member)).count() > 0) {
+        if (reservations.stream().anyMatch(x -> x.hasSameMember(reservation.getMember()))) {
             throw new ReservationAlreadyExistsException();
         }
 
@@ -99,6 +76,24 @@ public class ReservationService {
 
         return ReservationResponse.of(reservation);
     }
+
+    private Reservation createReservation(Long memberId, ReservationRequest request, ReservationStatus status) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotExistsException::new);
+        ReservationTime reservationTime = reservationTimeRepository.findById(request.getTimeId())
+                .orElseThrow(ReservationTimeNotExistsException::new);
+        Theme theme = themeRepository.findById(request.getThemeId())
+                .orElseThrow(ThemeNotExistsException::new);
+
+        Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme, status);
+
+        if (reservation.isBeforeThan(LocalDateTime.now())) {
+            throw new PastDateTimeException();
+        }
+
+        return reservation;
+    }
+
 
     public void deleteReservation(long id) {
         reservationRepository.deleteById(id);
