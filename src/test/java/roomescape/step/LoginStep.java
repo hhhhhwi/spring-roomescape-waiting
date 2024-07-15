@@ -7,24 +7,34 @@ import static roomescape.member.initializer.MemberInitializer.DUMMY_USER_PASSWOR
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import roomescape.login.dto.LoginRequest;
 
 public class LoginStep {
 
     public static String 회원_토큰_생성() {
-        return 토큰_생성(DUMMY_USER_EMAIL, DUMMY_USER_PASSWORD);
+        return 로그인(DUMMY_USER_EMAIL, DUMMY_USER_PASSWORD).cookie("token");
     }
 
     public static String 관리자_토큰_생성() {
-        return 토큰_생성(DUMMY_ADMIN_EMAIL, DUMMY_ADMIN_PASSWORD);
+        return 로그인(DUMMY_ADMIN_EMAIL, DUMMY_ADMIN_PASSWORD).cookie("token");
     }
 
-    public static String 토큰_생성(String email, String password) {
+    public static ExtractableResponse<Response> 로그인(String email, String password) {
         return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(new LoginRequest(email, password))
-            .when().post("/login")
-            .then().log().all().extract()
-            .cookie("token");
+                .contentType(ContentType.JSON)
+                .body(new LoginRequest(email, password))
+                .when().post("/login")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그아웃() {
+        return RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().post("/logout")
+                .then().log().all()
+                .extract();
     }
 }

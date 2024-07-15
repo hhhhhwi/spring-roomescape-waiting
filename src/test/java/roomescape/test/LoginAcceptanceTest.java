@@ -3,6 +3,8 @@ package roomescape.test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static roomescape.member.initializer.MemberInitializer.DUMMY_USER_EMAIL;
 import static roomescape.member.initializer.MemberInitializer.DUMMY_USER_PASSWORD;
+import static roomescape.step.LoginStep.로그아웃;
+import static roomescape.step.LoginStep.로그인;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -76,23 +78,6 @@ public class LoginAcceptanceTest {
         ExtractableResponse<Response> response = 로그인_정보_조회(token);
 
         assertThat(response.statusCode()).isEqualTo(401);
-    }
-
-    private ExtractableResponse<Response> 로그인(String email, String password) {
-        return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(new LoginRequest(email, password))
-            .when().post("/login")
-            .then().log().all()
-            .extract();
-    }
-
-    private ExtractableResponse<Response> 로그아웃() {
-        return RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .when().post("/logout")
-                .then().log().all()
-                .extract();
     }
 
     private ExtractableResponse<Response> 로그인_정보_조회(String token) {
