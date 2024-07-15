@@ -2,6 +2,7 @@ package roomescape.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static roomescape.member.initializer.MemberInitializer.FIRST_USER_EMAIL;
+import static roomescape.member.initializer.MemberInitializer.FIRST_USER_NAME;
 import static roomescape.member.initializer.MemberInitializer.FIRST_USER_PASSWORD;
 import static roomescape.step.LoginStep.로그아웃;
 import static roomescape.step.LoginStep.로그인;
@@ -21,8 +22,6 @@ import roomescape.error.RoomescapeErrorMessage;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class LoginAcceptanceTest {
-
-    private final String name = "test";
 
     @Test
     void 로그인_성공() {
@@ -57,7 +56,7 @@ public class LoginAcceptanceTest {
         ExtractableResponse<Response> response = 로그인_정보_조회(token);
 
         assertThat(response.statusCode()).isEqualTo(200);
-        assertThat(response.jsonPath().get("name").toString()).isEqualTo(name);
+        assertThat(response.jsonPath().get("name").toString()).isEqualTo(FIRST_USER_NAME);
     }
 
     @Test
@@ -81,10 +80,10 @@ public class LoginAcceptanceTest {
 
     private ExtractableResponse<Response> 로그인_정보_조회(String token) {
         return RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .cookie("token", token)
-                .when().get("/login/check")
-                .then().log().all()
-                .extract();
+            .contentType(ContentType.JSON)
+            .cookie("token", token)
+            .when().get("/login/check")
+            .then().log().all()
+            .extract();
     }
 }

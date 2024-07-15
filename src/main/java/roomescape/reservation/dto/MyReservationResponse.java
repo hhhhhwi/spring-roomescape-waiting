@@ -1,7 +1,7 @@
 package roomescape.reservation.dto;
 
 import roomescape.reservation.Reservation;
-import roomescape.reservation.Waiting;
+import roomescape.reservation.WaitingReservation;
 
 public class MyReservationResponse {
 
@@ -17,7 +17,8 @@ public class MyReservationResponse {
 
     private String statusText;
 
-    private MyReservationResponse(Long reservationId, String theme, String date, String time, String statusCode, String statusText) {
+    private MyReservationResponse(Long reservationId, String theme, String date, String time,
+        String statusCode, String statusText) {
         this.reservationId = reservationId;
         this.theme = theme;
         this.date = date;
@@ -35,15 +36,23 @@ public class MyReservationResponse {
             reservation.getReservationStatus().getDescription());
     }
 
-    public static MyReservationResponse from(Waiting waiting) {
-        Reservation reservation = waiting.getReservation();
+    public static MyReservationResponse from(WaitingReservation waitingReservation) {
+        Reservation reservation = waitingReservation.getReservation();
 
         return new MyReservationResponse(reservation.getId(),
             reservation.getTheme().getName(),
             reservation.getDate().toString(),
             reservation.getReservationTime().getStartAt().toString(),
             reservation.getReservationStatus().name(),
-            waiting.getRank() + "번째 " + reservation.getReservationStatus().getDescription());
+            getRankDescription(waitingReservation.getRank()) + reservation.getReservationStatus().getDescription());
+    }
+
+    private static String getRankDescription(Long rank) {
+        if (rank == 0L) {
+            return "";
+        }
+
+        return rank + "번째 ";
     }
 
     public Long getReservationId() {

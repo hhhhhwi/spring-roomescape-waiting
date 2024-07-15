@@ -7,12 +7,10 @@ import roomescape.member.Member;
 import roomescape.member.repository.MemberRepository;
 import roomescape.reservation.Reservation;
 import roomescape.reservation.ReservationStatus;
-import roomescape.reservation.Waiting;
 import roomescape.reservation.dto.MyReservationResponse;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.repository.ReservationRepository;
-import roomescape.reservation.repository.WaitingRepository;
 import roomescape.reservationtime.ReservationTime;
 import roomescape.reservationtime.repository.ReservationTimeRepository;
 import roomescape.theme.Theme;
@@ -28,16 +26,14 @@ public class ReservationService {
     private final ReservationTimeRepository reservationTimeRepository;
     private final ThemeRepository themeRepository;
     private final MemberRepository memberRepository;
-    private final WaitingRepository waitingRepository;
 
     public ReservationService(ReservationRepository reservationRepository,
         ReservationTimeRepository reservationTimeRepository, ThemeRepository themeRepository,
-        MemberRepository memberRepository, WaitingRepository waitingRepository) {
+        MemberRepository memberRepository) {
         this.reservationRepository = reservationRepository;
         this.reservationTimeRepository = reservationTimeRepository;
         this.themeRepository = themeRepository;
         this.memberRepository = memberRepository;
-        this.waitingRepository = waitingRepository;
     }
 
     public List<ReservationResponse> findReservations() {
@@ -47,10 +43,11 @@ public class ReservationService {
     }
 
     public ReservationResponse saveReservation(Long memberId, ReservationRequest request) {
-        Reservation reservation = createReservation(memberId, request, ReservationStatus.RESERVATION);
+        Reservation reservation = createReservation(memberId, request,
+            ReservationStatus.RESERVATION);
 
         if (!reservationRepository.findByDateAndReservationTimeAndTheme(reservation.getDate(),
-                reservation.getReservationTime(), reservation.getTheme()).isEmpty()) {
+            reservation.getReservationTime(), reservation.getTheme()).isEmpty()) {
             throw new ReservationAlreadyExistsException();
         }
 
@@ -61,9 +58,9 @@ public class ReservationService {
         Reservation reservation = createReservation(memberId, request, ReservationStatus.WAITING);
 
         List<Reservation> reservations = reservationRepository.findByDateAndReservationTimeAndTheme(
-                reservation.getDate(), reservation.getReservationTime(), reservation.getTheme());
+            reservation.getDate(), reservation.getReservationTime(), reservation.getTheme());
 
-        if (reservations.size() < 1) {
+        if (reservations.isEmpty()) {
             throw new IllegalReservationException();
         }
 
@@ -72,20 +69,21 @@ public class ReservationService {
         }
 
         reservationRepository.save(reservation);
-        waitingRepository.save(new Waiting(reservation, reservations.size()));
 
         return ReservationResponse.of(reservation);
     }
 
-    private Reservation createReservation(Long memberId, ReservationRequest request, ReservationStatus status) {
+    private Reservation createReservation(Long memberId, ReservationRequest request,
+        ReservationStatus status) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotExistsException::new);
+            .orElseThrow(MemberNotExistsException::new);
         ReservationTime reservationTime = reservationTimeRepository.findById(request.getTimeId())
-                .orElseThrow(ReservationTimeNotExistsException::new);
+            .orElseThrow(ReservationTimeNotExistsException::new);
         Theme theme = themeRepository.findById(request.getThemeId())
-                .orElseThrow(ThemeNotExistsException::new);
+            .orElseThrow(ThemeNotExistsException::new);
 
-        Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme, status);
+        Reservation reservation = new Reservation(member, request.getDate(), reservationTime, theme,
+            status);
 
         if (reservation.isBeforeThan(LocalDateTime.now())) {
             throw new PastDateTimeException();
@@ -103,16 +101,8 @@ public class ReservationService {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotExistsException::new);
 
-        return reservationRepository.findByMember(member).stream()
-            .map(reservation -> {
-                if (reservation.isWaiting()) {
-                    return MyReservationResponse.from(
-                        waitingRepository.findByReservation(reservation)
-                            .orElseThrow(IllegalReservationException::new));
-                }
-
-                return MyReservationResponse.from(reservation);
-            })
+        return reservationRepository.findWithRankByMember(memberId).stream()
+            .map(MyReservationResponse::from)
             .collect(Collectors.toList());
     }
 }
