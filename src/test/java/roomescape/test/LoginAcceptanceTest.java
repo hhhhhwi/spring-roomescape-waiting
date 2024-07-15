@@ -1,8 +1,8 @@
 package roomescape.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static roomescape.member.initializer.MemberInitializer.DUMMY_USER_EMAIL;
-import static roomescape.member.initializer.MemberInitializer.DUMMY_USER_PASSWORD;
+import static roomescape.member.initializer.MemberInitializer.FIRST_USER_EMAIL;
+import static roomescape.member.initializer.MemberInitializer.FIRST_USER_PASSWORD;
 import static roomescape.step.LoginStep.로그아웃;
 import static roomescape.step.LoginStep.로그인;
 
@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.error.RoomescapeErrorMessage;
-import roomescape.login.dto.LoginRequest;
 
 @DisplayName("로그인 관련 api 호출 테스트")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -27,7 +26,7 @@ public class LoginAcceptanceTest {
 
     @Test
     void 로그인_성공() {
-        ExtractableResponse<Response> response = 로그인(DUMMY_USER_EMAIL, DUMMY_USER_PASSWORD);
+        ExtractableResponse<Response> response = 로그인(FIRST_USER_EMAIL, FIRST_USER_PASSWORD);
 
         assertThat(response.statusCode()).isEqualTo(200);
         assertThat(response.cookie("token")).isNotBlank();
@@ -35,7 +34,7 @@ public class LoginAcceptanceTest {
 
     @Test
     void 등록되지_않은_이메일을_입력할경우_로그인_실패() {
-        ExtractableResponse<Response> response = 로그인("new@email.com", DUMMY_USER_PASSWORD);
+        ExtractableResponse<Response> response = 로그인("new@email.com", FIRST_USER_PASSWORD);
 
         assertThat(response.statusCode()).isEqualTo(404);
         assertThat(response.jsonPath().get("message").toString())
@@ -44,7 +43,7 @@ public class LoginAcceptanceTest {
 
     @Test
     void 일치하지_않는_비밀번호를_입력할_경우_로그인_실패() {
-        ExtractableResponse<Response> response = 로그인(DUMMY_USER_EMAIL, "newPassword");
+        ExtractableResponse<Response> response = 로그인(FIRST_USER_EMAIL, "newPassword");
 
         assertThat(response.statusCode()).isEqualTo(401);
         assertThat(response.jsonPath().get("message").toString())
@@ -53,7 +52,7 @@ public class LoginAcceptanceTest {
 
     @Test
     void 로그인_후_정보_조회_성공() {
-        String token = 로그인(DUMMY_USER_EMAIL, DUMMY_USER_PASSWORD).cookie("token");
+        String token = 로그인(FIRST_USER_EMAIL, FIRST_USER_PASSWORD).cookie("token");
 
         ExtractableResponse<Response> response = 로그인_정보_조회(token);
 
@@ -71,7 +70,7 @@ public class LoginAcceptanceTest {
 
     @Test
     void 로그아웃_후_정보_조회_시_실패() {
-        로그인(DUMMY_USER_EMAIL, DUMMY_USER_PASSWORD);
+        로그인(FIRST_USER_EMAIL, FIRST_USER_PASSWORD);
 
         String token = 로그아웃().cookie("token");
 

@@ -15,8 +15,9 @@ import roomescape.reservationtime.dto.ReservationTimeRequest;
 import roomescape.theme.dto.ThemeRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static roomescape.step.LoginStep.관리자_토큰_생성;
-import static roomescape.step.LoginStep.회원_토큰_생성;
+import static roomescape.member.initializer.MemberInitializer.SECOND_USER_EMAIL;
+import static roomescape.member.initializer.MemberInitializer.SECOND_USER_PASSWORD;
+import static roomescape.step.LoginStep.*;
 import static roomescape.step.ReservationStep.예약_등록;
 import static roomescape.step.ReservationTimeStep.예약_시간_등록;
 import static roomescape.step.ThemeStep.테마_등록;
@@ -108,6 +109,20 @@ public class ReservationAcceptanceTest {
 
         assertThat(responseAfterDelete.statusCode()).isEqualTo(200);
     }
+
+    @Test
+    void 예약_대기_성공() {
+        예약_등록(request);
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("token", 토큰_생성(SECOND_USER_EMAIL, SECOND_USER_PASSWORD))
+                .body(request)
+                .when().post("/reservations/waiting")
+                .then().log().all()
+                .statusCode(200);
+    }
+
 
     private ExtractableResponse<Response> 관리자용_예약_조회() {
         return RestAssured.given().log().all()

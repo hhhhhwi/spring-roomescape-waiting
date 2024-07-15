@@ -2,8 +2,8 @@ package roomescape.step;
 
 import static roomescape.member.initializer.MemberInitializer.DUMMY_ADMIN_EMAIL;
 import static roomescape.member.initializer.MemberInitializer.DUMMY_ADMIN_PASSWORD;
-import static roomescape.member.initializer.MemberInitializer.DUMMY_USER_EMAIL;
-import static roomescape.member.initializer.MemberInitializer.DUMMY_USER_PASSWORD;
+import static roomescape.member.initializer.MemberInitializer.FIRST_USER_EMAIL;
+import static roomescape.member.initializer.MemberInitializer.FIRST_USER_PASSWORD;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -14,11 +14,15 @@ import roomescape.login.dto.LoginRequest;
 public class LoginStep {
 
     public static String 회원_토큰_생성() {
-        return 로그인(DUMMY_USER_EMAIL, DUMMY_USER_PASSWORD).cookie("token");
+        return 로그인(FIRST_USER_EMAIL, FIRST_USER_PASSWORD).cookie("token");
     }
 
     public static String 관리자_토큰_생성() {
         return 로그인(DUMMY_ADMIN_EMAIL, DUMMY_ADMIN_PASSWORD).cookie("token");
+    }
+
+    public static String 토큰_생성(String email, String password) {
+        return 로그인(email, password).cookie("token");
     }
 
     public static ExtractableResponse<Response> 로그인(String email, String password) {
