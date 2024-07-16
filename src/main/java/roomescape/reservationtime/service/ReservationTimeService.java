@@ -10,6 +10,7 @@ import roomescape.reservation.repository.ReservationRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import roomescape.reservationtime.ReservationTime;
+import roomescape.reservationtime.dto.AvailableTimeResponse;
 import roomescape.reservationtime.dto.ReservationTimeRequest;
 import roomescape.reservationtime.dto.ReservationTimeResponse;
 import roomescape.reservationtime.repository.ReservationTimeRepository;
@@ -53,7 +54,7 @@ public class ReservationTimeService {
         reservationTimeRepository.deleteById(id);
     }
 
-    public List<ReservationTimeResponse> findAvailableReservationTimes(String date, Long themeId) {
+    public List<AvailableTimeResponse> findAvailableReservationTimes(String date, Long themeId) {
         Theme theme = themeRepository.findById(themeId)
             .orElseThrow(ThemeNotExistsException::new);
         List<Long> ids = reservationRepository.findByDateAndTheme(LocalDate.parse(date), theme)
@@ -62,7 +63,7 @@ public class ReservationTimeService {
 
         return reservationTimeRepository.findAll().stream()
             .map(reservationTime ->
-                ReservationTimeResponse.from(reservationTime, ids.contains(reservationTime.getId())))
+                AvailableTimeResponse.from(reservationTime, ids.contains(reservationTime.getId())))
             .collect(Collectors.toList());
     }
 }
