@@ -2,7 +2,6 @@ package roomescape.login.controller;
 
 import java.net.URI;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -16,6 +15,7 @@ import roomescape.login.dto.LoginRequest;
 import roomescape.login.dto.LoginResponse;
 import roomescape.login.service.LoginService;
 import roomescape.member.MemberRole;
+import roomescape.util.CookieUtils;
 
 @Controller
 public class LoginController {
@@ -60,10 +60,7 @@ public class LoginController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("token", null);
-        cookie.setMaxAge(0);
-
-        response.addCookie(cookie);
+        CookieUtils.deleteCookie(response, COOKIE_NAME_FOR_LOGIN);
 
         return ResponseEntity.ok().build();
     }
