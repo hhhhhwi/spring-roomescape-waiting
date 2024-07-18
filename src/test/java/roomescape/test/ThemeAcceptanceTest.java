@@ -15,6 +15,7 @@ import roomescape.theme.dto.ThemeRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
+import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
 import static roomescape.step.LoginStep.*;
 import static roomescape.step.ReservationStep.*;
 import static roomescape.step.ReservationTimeStep.예약_시간_등록;
@@ -42,7 +43,7 @@ public class ThemeAcceptanceTest {
 
         RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .cookie("token", 회원_토큰_생성())
+            .cookie(COOKIE_NAME_FOR_LOGIN, 회원_토큰_생성())
             .body(request)
             .when().post("/themes")
             .then().log().all()
@@ -62,7 +63,7 @@ public class ThemeAcceptanceTest {
     @Test
     void 테마_삭제_성공() {
         RestAssured.given().log().all()
-            .cookie("token", adminToken)
+            .cookie(COOKIE_NAME_FOR_LOGIN, adminToken)
             .when().delete("/themes/1")
             .then().log().all()
             .statusCode(204);
@@ -75,7 +76,7 @@ public class ThemeAcceptanceTest {
         예약_등록(new ReservationRequest("2025-08-05", 1L, 1L));
 
         RestAssured.given().log().all()
-            .cookie("token", adminToken)
+            .cookie(COOKIE_NAME_FOR_LOGIN, adminToken)
             .when().delete("/themes/1")
             .then().log().all()
             .statusCode(409);
@@ -84,7 +85,7 @@ public class ThemeAcceptanceTest {
     @Test
     void 관리자_외_테마_삭제_실패() {
         RestAssured.given().log().all()
-            .cookie("token", 회원_토큰_생성())
+            .cookie(COOKIE_NAME_FOR_LOGIN, 회원_토큰_생성())
             .when().delete("/themes/1")
             .then().log().all()
             .statusCode(401);

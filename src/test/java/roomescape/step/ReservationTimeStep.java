@@ -1,5 +1,6 @@
 package roomescape.step;
 
+import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
 import static roomescape.step.LoginStep.관리자_토큰_생성;
 
 import io.restassured.RestAssured;
@@ -13,7 +14,7 @@ public class ReservationTimeStep {
     public static ExtractableResponse<Response> 예약_시간_등록(String token, ReservationTimeRequest request) {
         return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .cookie("token", token)
+            .cookie(COOKIE_NAME_FOR_LOGIN, token)
             .body(request)
             .when().post("/times")
             .then().log().all()

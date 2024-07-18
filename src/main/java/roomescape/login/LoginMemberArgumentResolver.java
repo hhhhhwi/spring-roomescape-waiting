@@ -1,5 +1,6 @@
 package roomescape.login;
 
+import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
 import static roomescape.util.CookieUtils.getCookie;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             throw new AuthenticationException();
         }
 
-        String token = getCookie(servletRequest, "token")
+        String token = getCookie(servletRequest, COOKIE_NAME_FOR_LOGIN)
             .orElseThrow(AuthenticationException::new)
             .getValue();
 

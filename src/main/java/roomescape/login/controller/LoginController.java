@@ -1,5 +1,7 @@
 package roomescape.login.controller;
 
+import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
+
 import java.net.URI;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,7 +39,7 @@ public class LoginController {
             loginRequest.getPassword());
 
         ResponseCookie cookie = ResponseCookie
-                                    .from("token", loginService.createToken(loginMember))
+                                    .from(COOKIE_NAME_FOR_LOGIN, loginService.createToken(loginMember))
                                     .path("/")
                                     .httpOnly(true)
                                     .secure(true)

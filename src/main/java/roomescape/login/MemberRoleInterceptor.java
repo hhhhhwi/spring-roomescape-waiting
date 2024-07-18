@@ -1,5 +1,6 @@
 package roomescape.login;
 
+import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
 import static roomescape.util.CookieUtils.getCookie;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,7 @@ public class MemberRoleInterceptor implements HandlerInterceptor {
         if(isExcludeToCheckRole(request)) {
             return true;
         }
-        String token = getCookie(request, "token")
+        String token = getCookie(request, COOKIE_NAME_FOR_LOGIN)
             .orElseThrow(AuthenticationException::new)
             .getValue();
 

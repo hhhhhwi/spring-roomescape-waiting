@@ -4,6 +4,8 @@ import roomescape.member.MemberRole;
 
 public class LoginMember {
 
+    public static String COOKIE_NAME_FOR_LOGIN = "token";
+
     private Long id;
 
     private String name;

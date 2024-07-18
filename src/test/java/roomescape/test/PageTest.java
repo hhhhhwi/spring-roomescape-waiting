@@ -1,5 +1,6 @@
 package roomescape.test;
 
+import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
 import static roomescape.step.LoginStep.관리자_토큰_생성;
 import static roomescape.step.LoginStep.회원_토큰_생성;
 
@@ -26,7 +27,7 @@ public class PageTest {
     @Test
     void 어드민_페이지_접속_성공() {
         RestAssured.given().log().all()
-            .cookie("token", 관리자_토큰_생성())
+            .cookie(COOKIE_NAME_FOR_LOGIN, 관리자_토큰_생성())
             .when().get("/admin/reservation")
             .then().log().all()
             .statusCode(200);
@@ -35,7 +36,7 @@ public class PageTest {
     @Test
     void 관리자_외_어드민_페이지_접속_실패() {
         RestAssured.given().log().all()
-            .cookie("token", 회원_토큰_생성())
+            .cookie(COOKIE_NAME_FOR_LOGIN, 회원_토큰_생성())
             .when().get("/admin/reservation")
             .then().log().all()
             .statusCode(401);
