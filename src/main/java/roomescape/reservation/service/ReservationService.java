@@ -60,7 +60,7 @@ public class ReservationService {
             reservation.getDate(), reservation.getReservationTime(), reservation.getTheme());
 
         if (reservations.isEmpty()) {
-            throw new IllegalReservationException();
+            throw new ReservationNotExistsException();
         }
 
         if (reservations.stream().anyMatch(x -> x.hasSameMember(reservation.getMember()))) {
