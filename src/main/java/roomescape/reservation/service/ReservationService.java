@@ -97,11 +97,16 @@ public class ReservationService {
     }
 
     public List<MyReservationResponse> findReservationsByMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotExistsException::new);
+        if (!isMemberExist(memberId)) {
+            throw new MemberNotExistsException();
+        }
 
         return reservationRepository.findWithRankByMember(memberId).stream()
             .map(MyReservationResponse::from)
             .toList();
+    }
+
+    private boolean isMemberExist(Long memberId) {
+        return memberRepository.findById(memberId).isPresent();
     }
 }
