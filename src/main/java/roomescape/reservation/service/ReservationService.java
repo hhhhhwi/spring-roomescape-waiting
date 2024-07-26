@@ -17,7 +17,6 @@ import roomescape.theme.Theme;
 import roomescape.theme.repository.ThemeRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -39,7 +38,7 @@ public class ReservationService {
     public List<ReservationResponse> findReservations() {
         return reservationRepository.findAll().stream()
             .map(ReservationResponse::of)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public ReservationResponse saveReservation(Long memberId, ReservationRequest request) {
@@ -103,6 +102,6 @@ public class ReservationService {
 
         return reservationRepository.findWithRankByMember(memberId).stream()
             .map(MyReservationResponse::from)
-            .collect(Collectors.toList());
+            .toList();
     }
 }

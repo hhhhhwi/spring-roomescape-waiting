@@ -1,7 +1,6 @@
 package roomescape.member.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import roomescape.error.exception.MemberAlreadyExistsException;
 import roomescape.error.exception.MemberNotExistsException;
@@ -26,7 +25,7 @@ public class MemberService implements LoginMemberService {
     public List<MemberResponse> findMembers() {
         return memberRepository.findAll().stream()
             .map(MemberResponse::new)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

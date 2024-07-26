@@ -6,7 +6,6 @@ import roomescape.error.exception.ThemeReferenceException;
 import roomescape.reservation.repository.ReservationRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import roomescape.theme.Theme;
 import roomescape.theme.dto.ThemeRequest;
 import roomescape.theme.dto.ThemeResponse;
@@ -27,7 +26,7 @@ public class ThemeService {
     public List<ThemeResponse> findThemes() {
         return themeRepository.findAll().stream()
             .map(ThemeResponse::new)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public Theme saveThemes(ThemeRequest request) {
