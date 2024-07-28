@@ -1,7 +1,7 @@
 package roomescape.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
+import static roomescape.util.LoginUtils.COOKIE_NAME_FOR_LOGIN;
 import static roomescape.member.initializer.MemberInitializer.FIRST_USER_EMAIL;
 import static roomescape.member.initializer.MemberInitializer.FIRST_USER_NAME;
 import static roomescape.member.initializer.MemberInitializer.FIRST_USER_PASSWORD;
@@ -11,6 +11,7 @@ import static roomescape.step.LoginStep.토큰_생성;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.http.Cookie;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -53,8 +54,7 @@ public class LoginAcceptanceTest {
 
     @Test
     void 로그인_후_정보_조회_성공() {
-        String token = 토큰_생성(FIRST_USER_EMAIL, FIRST_USER_PASSWORD);
-        ExtractableResponse<Response> response = 로그인_정보_조회(token);
+        ExtractableResponse<Response> response = 로그인_정보_조회(토큰_생성(FIRST_USER_EMAIL, FIRST_USER_PASSWORD));
 
         assertThat(response.statusCode()).isEqualTo(200);
         assertThat(response.jsonPath().get("name").toString()).isEqualTo(FIRST_USER_NAME);
@@ -72,17 +72,17 @@ public class LoginAcceptanceTest {
     void 로그아웃_후_정보_조회_시_실패() {
         로그인(FIRST_USER_EMAIL, FIRST_USER_PASSWORD);
 
-        String token = 로그아웃().cookie(COOKIE_NAME_FOR_LOGIN);
+        Cookie token = 로그아웃().detailedCookie(COOKIE_NAME_FOR_LOGIN);
 
         ExtractableResponse<Response> response = 로그인_정보_조회(token);
 
         assertThat(response.statusCode()).isEqualTo(401);
     }
 
-    private ExtractableResponse<Response> 로그인_정보_조회(String token) {
+    private ExtractableResponse<Response> 로그인_정보_조회(Cookie token) {
         return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .cookie(COOKIE_NAME_FOR_LOGIN, token)
+            .cookie(token)
             .when().get("/login/check")
             .then().log().all()
             .extract();

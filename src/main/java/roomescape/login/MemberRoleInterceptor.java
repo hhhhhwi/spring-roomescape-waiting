@@ -1,14 +1,12 @@
 package roomescape.login;
 
-import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
-import static roomescape.util.CookieUtils.getCookie;
+import static roomescape.util.LoginUtils.getToken;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
-import roomescape.error.exception.AuthenticationException;
 import roomescape.member.MemberRole;
 
 public class MemberRoleInterceptor implements HandlerInterceptor {
@@ -27,9 +25,7 @@ public class MemberRoleInterceptor implements HandlerInterceptor {
         if(isExcludeToCheckRole(request)) {
             return true;
         }
-        String token = getCookie(request, COOKIE_NAME_FOR_LOGIN)
-            .orElseThrow(AuthenticationException::new)
-            .getValue();
+        String token = getToken(request);
 
         if(isAdmin(token)) {
             return true;

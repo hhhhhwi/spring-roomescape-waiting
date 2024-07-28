@@ -15,7 +15,6 @@ import roomescape.reservationtime.dto.ReservationTimeRequest;
 import roomescape.theme.dto.ThemeRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
 import static roomescape.member.initializer.MemberInitializer.SECOND_USER_EMAIL;
 import static roomescape.member.initializer.MemberInitializer.SECOND_USER_PASSWORD;
 import static roomescape.step.LoginStep.*;
@@ -47,7 +46,7 @@ public class ReservationAcceptanceTest {
     void 관리자용_예약_등록_성공() {
         RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .cookie(COOKIE_NAME_FOR_LOGIN, 관리자_토큰_생성())
+            .cookie(관리자_토큰_생성())
             .body(new AdminReservationRequest(1L, "2025-08-05", 1L, 1L))
             .when().post("/admin/reservations")
             .then().log().all()
@@ -91,7 +90,7 @@ public class ReservationAcceptanceTest {
         예약_등록(request);
 
         RestAssured.given().log().all()
-            .cookie(COOKIE_NAME_FOR_LOGIN, 회원_토큰_생성())
+            .cookie(회원_토큰_생성())
             .when().get("/reservations/mine")
             .then().log().all()
             .statusCode(200);
@@ -117,7 +116,7 @@ public class ReservationAcceptanceTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .cookie(COOKIE_NAME_FOR_LOGIN, 토큰_생성(SECOND_USER_EMAIL, SECOND_USER_PASSWORD))
+                .cookie(토큰_생성(SECOND_USER_EMAIL, SECOND_USER_PASSWORD))
                 .body(request)
                 .when().post("/reservations/waiting")
                 .then().log().all()

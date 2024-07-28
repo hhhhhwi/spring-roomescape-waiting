@@ -2,6 +2,7 @@ package roomescape.test;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.http.Cookie;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,6 @@ import roomescape.theme.dto.ThemeRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
-import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
 import static roomescape.step.LoginStep.*;
 import static roomescape.step.ReservationStep.*;
 import static roomescape.step.ReservationTimeStep.예약_시간_등록;
@@ -26,7 +26,7 @@ import static roomescape.step.ThemeStep.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ThemeAcceptanceTest {
 
-    private String adminToken;
+    private Cookie adminToken;
 
     @BeforeEach
     void 테마_등록_성공() {
@@ -43,7 +43,7 @@ public class ThemeAcceptanceTest {
 
         RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .cookie(COOKIE_NAME_FOR_LOGIN, 회원_토큰_생성())
+            .cookie(회원_토큰_생성())
             .body(request)
             .when().post("/themes")
             .then().log().all()
@@ -63,7 +63,7 @@ public class ThemeAcceptanceTest {
     @Test
     void 테마_삭제_성공() {
         RestAssured.given().log().all()
-            .cookie(COOKIE_NAME_FOR_LOGIN, adminToken)
+            .cookie(adminToken)
             .when().delete("/themes/1")
             .then().log().all()
             .statusCode(204);
@@ -76,7 +76,7 @@ public class ThemeAcceptanceTest {
         예약_등록(new ReservationRequest("2025-08-05", 1L, 1L));
 
         RestAssured.given().log().all()
-            .cookie(COOKIE_NAME_FOR_LOGIN, adminToken)
+            .cookie(adminToken)
             .when().delete("/themes/1")
             .then().log().all()
             .statusCode(409);
@@ -85,7 +85,7 @@ public class ThemeAcceptanceTest {
     @Test
     void 관리자_외_테마_삭제_실패() {
         RestAssured.given().log().all()
-            .cookie(COOKIE_NAME_FOR_LOGIN, 회원_토큰_생성())
+            .cookie(회원_토큰_생성())
             .when().delete("/themes/1")
             .then().log().all()
             .statusCode(401);

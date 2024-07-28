@@ -1,6 +1,7 @@
 package roomescape.login.controller;
 
-import static roomescape.login.LoginMember.COOKIE_NAME_FOR_LOGIN;
+import static roomescape.util.LoginUtils.deleteToken;
+import static roomescape.util.LoginUtils.setToken;
 
 import java.net.URI;
 
@@ -17,7 +18,6 @@ import roomescape.login.dto.LoginRequest;
 import roomescape.login.dto.LoginResponse;
 import roomescape.login.service.LoginService;
 import roomescape.member.MemberRole;
-import roomescape.util.CookieUtils;
 
 @Controller
 public class LoginController {
@@ -38,12 +38,7 @@ public class LoginController {
         LoginMember loginMember = loginService.getLoginMember(loginRequest.getEmail(),
             loginRequest.getPassword());
 
-        ResponseCookie cookie = ResponseCookie
-                                    .from(COOKIE_NAME_FOR_LOGIN, loginService.createToken(loginMember))
-                                    .path("/")
-                                    .httpOnly(true)
-                                    .secure(true)
-                                    .build();
+        ResponseCookie cookie = setToken(loginService.createToken(loginMember));
 
         String uri = "/";
 
@@ -62,7 +57,7 @@ public class LoginController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        CookieUtils.deleteCookie(response, COOKIE_NAME_FOR_LOGIN);
+        deleteToken(response);
 
         return ResponseEntity.ok().build();
     }
