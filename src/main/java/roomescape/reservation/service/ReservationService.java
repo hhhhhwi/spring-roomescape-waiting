@@ -8,6 +8,7 @@ import roomescape.member.Member;
 import roomescape.member.repository.MemberRepository;
 import roomescape.reservation.Reservation;
 import roomescape.reservation.ReservationStatus;
+import roomescape.reservation.WaitingReservation;
 import roomescape.reservation.dto.MyReservationResponse;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
@@ -102,16 +103,13 @@ public class ReservationService {
     }
 
     public List<MyReservationResponse> findReservationsByMember(Long memberId) {
-        if (!isMemberExists(memberId)) {
-            throw new MemberNotExistsException();
-        }
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotExistsException::new);
 
-        return reservationRepository.findWithRankByMember(memberId).stream()
+        return reservationRepository.findByMember(member).stream()
+            .map(r -> new WaitingReservation(r, reservationRepository.findRankByMember(
+                r.getId(), r.getDate(), r.getReservationTime(), r.getTheme())))
             .map(MyReservationResponse::from)
             .toList();
-    }
-
-    private boolean isMemberExists(Long memberId) {
-        return memberRepository.findById(memberId).isPresent();
     }
 }
