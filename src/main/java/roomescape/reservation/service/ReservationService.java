@@ -102,7 +102,7 @@ public class ReservationService {
     }
 
     public List<MyReservationResponse> findReservationsByMember(Long memberId) {
-        if (!isMemberExist(memberId)) {
+        if (!isMemberExists(memberId)) {
             throw new MemberNotExistsException();
         }
 
@@ -111,7 +111,7 @@ public class ReservationService {
             .toList();
     }
 
-    private boolean isMemberExist(Long memberId) {
+    private boolean isMemberExists(Long memberId) {
         return memberRepository.findById(memberId).isPresent();
     }
 }
