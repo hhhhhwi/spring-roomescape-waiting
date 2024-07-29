@@ -1,6 +1,7 @@
 package roomescape.test.application;
 
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,11 +28,16 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class ReservationServiceTest {
+
     @Mock
     private ReservationRepository reservationRepository;
 
@@ -58,25 +64,36 @@ public class ReservationServiceTest {
     private final Theme theme = new Theme(themeId, themeName, "description", "thumbnail");
     private final LocalDate reservationDate = LocalDate.now().plusDays(1);
     private final String reservationDateString = reservationDate.toString();
-    private final Reservation reservation = new Reservation(member, reservationDateString, reservationTime, theme, ReservationStatus.RESERVATION);
+    private final Reservation reservation = new Reservation(member, reservationDateString,
+        reservationTime, theme, ReservationStatus.RESERVATION);
 
     @BeforeEach
     void setUp() {
-        reservationService = new ReservationService(reservationRepository, reservationTimeRepository, themeRepository,
-                memberRepository);
+        reservationService = new ReservationService(reservationRepository,
+            reservationTimeRepository, themeRepository, memberRepository);
+        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+        given(reservationTimeRepository.findById(timeId)).willReturn(Optional.of(reservationTime));
+        given(themeRepository.findById(themeId)).willReturn(Optional.of(theme));
+    }
+
+    @AfterEach
+    void verifyNumberOfInvocations() {
+        verify(memberRepository, times(1)).findById(anyLong());
+        verify(reservationTimeRepository, times(1)).findById(anyLong());
+        verify(themeRepository, times(1)).findById(anyLong());
+        verify(reservationRepository, times(1)).findByDateAndReservationTimeAndTheme(any(), any(), any());
     }
 
     @Test
     @DisplayName("예약을 등록한다")
     void saveReservation() {
-        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
-        given(reservationTimeRepository.findById(timeId)).willReturn(Optional.of(reservationTime));
-        given(themeRepository.findById(themeId)).willReturn(Optional.of(theme));
         given(reservationRepository.save(reservation))
-                .willReturn(new Reservation(reservationId, member,  LocalDate.now().plusDays(1), reservationTime, theme, ReservationStatus.RESERVATION));
+            .willReturn(
+                new Reservation(reservationId, member, LocalDate.now().plusDays(1),
+                    reservationTime, theme, ReservationStatus.RESERVATION));
 
-        ReservationResponse response = reservationService.saveReservation(memberId, new ReservationRequest(
-            reservationDateString, timeId, themeId));
+        ReservationResponse response = reservationService.saveReservation(memberId,
+            new ReservationRequest(reservationDateString, timeId, themeId));
 
         assertThat(response.getTime()).isEqualTo(time);
         assertThat(response.getName()).isEqualTo(memberName);
@@ -86,12 +103,11 @@ public class ReservationServiceTest {
     @Test
     @DisplayName("이미 예약된 예약을 등록할 경우 실패한다")
     void saveReservationAlreadyExists() {
-        Reservation savedReservation = new Reservation(reservationId, member, reservationDate, reservationTime, theme, ReservationStatus.RESERVATION);
-        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
-        given(reservationTimeRepository.findById(timeId)).willReturn(Optional.of(reservationTime));
-        given(themeRepository.findById(themeId)).willReturn(Optional.of(theme));
-        given(reservationRepository.findByDateAndReservationTimeAndTheme(reservationDate, reservationTime, theme))
-                .willReturn(List.of(savedReservation));
+        Reservation savedReservation = new Reservation(reservationId, member, reservationDate,
+            reservationTime, theme, ReservationStatus.RESERVATION);
+        given(reservationRepository.findByDateAndReservationTimeAndTheme(reservationDate,
+            reservationTime, theme))
+            .willReturn(List.of(savedReservation));
 
         assertThrows(ReservationAlreadyExistsException.class,
             () -> reservationService.saveReservation(memberId, new ReservationRequest(
@@ -102,17 +118,17 @@ public class ReservationServiceTest {
     @DisplayName("대기 예약을 등록한다.")
     void saveWaitingReservation() {
         Member otherMember = new Member(2L, "email", "password", "otherMember", MemberRole.MEMBER);
-        Reservation savedReservation = new Reservation(reservationId, otherMember, reservationDate, reservationTime, theme, ReservationStatus.RESERVATION);
-        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
-        given(reservationTimeRepository.findById(timeId)).willReturn(Optional.of(reservationTime));
-        given(themeRepository.findById(themeId)).willReturn(Optional.of(theme));
+        Reservation savedReservation =
+            new Reservation(reservationId, otherMember, reservationDate, reservationTime, theme, ReservationStatus.RESERVATION);
         given(reservationRepository.findByDateAndReservationTimeAndTheme(reservationDate, reservationTime, theme))
             .willReturn(List.of(savedReservation));
         given(reservationRepository.save(reservation))
-            .willReturn(new Reservation(reservationId, member,  LocalDate.now().plusDays(1), reservationTime, theme, ReservationStatus.WAITING));
+            .willReturn(
+                new Reservation(reservationId, member, LocalDate.now().plusDays(1),
+                    reservationTime, theme, ReservationStatus.WAITING));
 
-        ReservationResponse response = reservationService.saveWaitingReservation(memberId, new ReservationRequest(
-            reservationDateString, timeId, themeId));
+        ReservationResponse response = reservationService.saveWaitingReservation(memberId,
+            new ReservationRequest(reservationDateString, timeId, themeId));
 
         assertThat(response.getTime()).isEqualTo(time);
         assertThat(response.getName()).isEqualTo(memberName);
