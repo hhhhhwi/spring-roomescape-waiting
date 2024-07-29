@@ -2,6 +2,7 @@ package roomescape.reservationtime.service;
 
 import java.time.LocalDate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.error.exception.ReservationTimeNotExistsException;
 import roomescape.error.exception.ReservationTimeReferenceException;
 import roomescape.error.exception.ThemeNotExistsException;
@@ -17,6 +18,7 @@ import roomescape.theme.Theme;
 import roomescape.theme.repository.ThemeRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class ReservationTimeService {
 
     private final ReservationTimeRepository reservationTimeRepository;
@@ -31,6 +33,7 @@ public class ReservationTimeService {
         this.themeRepository = themeRepository;
     }
 
+    @Transactional
     public ReservationTimeResponse saveReservationTime(ReservationTimeRequest request) {
         ReservationTime reservationTime = new ReservationTime(request.getStartAt());
         return ReservationTimeResponse.of(reservationTimeRepository.save(reservationTime));
@@ -42,6 +45,7 @@ public class ReservationTimeService {
             .toList();
     }
 
+    @Transactional
     public void deleteReservationTime(Long id) {
         ReservationTime reservationTime = reservationTimeRepository.findById(id)
             .orElseThrow(ReservationTimeNotExistsException::new);

@@ -2,6 +2,7 @@ package roomescape.reservation.service;
 
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.error.exception.*;
 import roomescape.member.Member;
 import roomescape.member.repository.MemberRepository;
@@ -19,6 +20,7 @@ import roomescape.theme.repository.ThemeRepository;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
@@ -41,6 +43,7 @@ public class ReservationService {
             .toList();
     }
 
+    @Transactional
     public ReservationResponse saveReservation(Long memberId, ReservationRequest request) {
         Reservation reservation = createReservation(memberId, request,
             ReservationStatus.RESERVATION);
@@ -53,6 +56,7 @@ public class ReservationService {
         return ReservationResponse.of(reservationRepository.save(reservation));
     }
 
+    @Transactional
     public ReservationResponse saveWaitingReservation(Long memberId, ReservationRequest request) {
         Reservation reservation = createReservation(memberId, request, ReservationStatus.WAITING);
 
@@ -92,6 +96,7 @@ public class ReservationService {
     }
 
 
+    @Transactional
     public void deleteReservation(long id) {
         reservationRepository.deleteById(id);
     }
